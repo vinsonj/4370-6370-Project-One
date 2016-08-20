@@ -217,7 +217,12 @@ public class Table
 
 	List <Comparable []> rows = new ArrayList <> ();
 
-	//  T O   B E   I M P L E M E N T E D
+	// TO BE IMPLEMENTED this.tuples
+
+	rows = this.tuples.stream()
+	    .filter(t->!(table2.getTuples().contains(t)))
+	    .collect(Collectors.toList()); 
+	    
 
 	return new Table (name + count++, attribute, domain, key, rows);
     } // minus
@@ -322,6 +327,18 @@ public class Table
 	return name;
     } // getName
 
+    /************************************************************************************
+     *Get the tuples in the table
+     *
+     *@return a new Arraylist copy of the table's tuples
+     */
+    public Arraylist getTuples()
+    {
+	List<Comparable []> _tuples = new Arraylist<>();
+	_tuples = this.tuples.stream().collect(Collectors.toList());
+	return _tuples;
+    }
+    
     /************************************************************************************
      * Print this table.
      */
