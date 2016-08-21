@@ -80,9 +80,9 @@ public class Table
 	domain    = _domain;
 	key       = _key;
 	tuples    = new ArrayList <> ();
-	//      index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
-	index     = new LinHashMap <> (KeyType.class, Comparable [].class);
-
+	      index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+	//index     = new LinHashMap <> (KeyType.class, Comparable [].class);
+	//index = new HashMap<>(KeyType.class, Comparable [].class);
     } // constructor
 
     /************************************************************************************
@@ -332,9 +332,9 @@ public class Table
      *
      *@return a new Arraylist copy of the table's tuples
      */
-    public Arraylist getTuples()
+    public List<Comparable []> getTuples()
     {
-	List<Comparable []> _tuples = new Arraylist<>();
+	List<Comparable []> _tuples = new ArrayList<>();
 	_tuples = this.tuples.stream().collect(Collectors.toList());
 	return _tuples;
     }
