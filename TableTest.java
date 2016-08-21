@@ -44,8 +44,10 @@ public class TableTest{
 
 	Table newMovie=movie.minus(movie2);
 	newMovie.print();
-	
-	assertEquals(movie3,newMovie);
+
+	System.out.println("movie3 tuples: " + movie3.getTuples().toString());
+	System.out.println("newMovie tuples: " + newMovie.getTuples().toString());
+	assertTrue(movie3.equals(newMovie));
     }
     
 }
