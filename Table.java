@@ -79,7 +79,7 @@ public class Table
 	domain    = _domain;
 	key       = _key;
 	tuples    = new ArrayList <> ();
-	      index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+	index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
 	//index     = new LinHashMap <> (KeyType.class, Comparable [].class);
 	//index = new HashMap<>(KeyType.class, Comparable [].class);
     } // constructor
@@ -176,10 +176,11 @@ public class Table
 	List <Comparable []> rows = new ArrayList <> ();
 
 	//  T O   B E   I M P L E M E N T E D
-
+	rows.add(this.index.get(keyVal));
+	
 	return new Table (name + count++, attribute, domain, key, rows);
     } // select
-
+    
     /************************************************************************************
      * Union this table and table2.  Check that the two tables are compatible.
      *

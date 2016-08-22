@@ -13,6 +13,7 @@ public class TableTest extends TestCase{
     private Table movie;
     private Table movie2;
     private Table movie3;
+    private Table movie4;
     
     protected void setUp(){
 	movie = new Table ("movie", "title year length genre studioName producerNo",
@@ -23,7 +24,10 @@ public class TableTest extends TestCase{
 
 	movie3 = new Table ("movie3", "title year length genre studioName producerNo",
 				  "String Integer Integer String String Integer", "title year");
-    
+
+	movie4 = new Table ("movie4", "title year length genre studioName producerNo",
+				  "String Integer Integer String String Integer", "title year");
+	
 	Comparable [] film0 = { "Star_Wars", 1977, 124, "sciFi", "Fox", 12345 };
 	Comparable [] film1 = { "Star_Wars_2", 1980, 124, "sciFi", "Fox", 12345 };
 	Comparable [] film2 = { "Rocky", 1985, 200, "action", "Universal", 12125 };
@@ -43,6 +47,7 @@ public class TableTest extends TestCase{
 	movie3.insert(film3);
 	//movie3.print();
 
+	movie4.insert(film0);
     }
     
     
@@ -86,5 +91,14 @@ public class TableTest extends TestCase{
 	//System.out.println("newMovie tuples: " + newMovie.getTuples().toString());
 	assertTrue(movie3.equals(newMovie));
     }
+
+    @Test
+    public void testIndexSelect(){
+	KeyType key1=new KeyType(new Comparable[]{"Star_Wars",1977});
+	Table newMovie=movie.select(key1);
+	//System.out.println("newMovie: ");
+	//newMovie.print();
+	assertTrue(newMovie.equals(movie4));
+    } 
     
 }
