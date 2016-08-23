@@ -9,8 +9,6 @@ import java.io.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
-
-
 import static java.lang.Boolean.*;
 import static java.lang.System.out;
 
@@ -84,8 +82,9 @@ public class Table
 	domain    = _domain;
 	key       = _key;
 	tuples    = new ArrayList <> ();
-	//      index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
-	index     = new LinkedHashMap <KeyType, Comparable []> ();
+	index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+	//index     = new LinHashMap <> (KeyType.class, Comparable [].class);
+	//index = new HashMap<>(KeyType.class, Comparable [].class);
 
     } // constructor
 
@@ -198,10 +197,11 @@ public class Table
 	List <Comparable []> rows = new ArrayList <> ();
 
 	//  T O   B E   I M P L E M E N T E D
-
+	rows.add(this.index.get(keyVal));
+	
 	return new Table (name + count++, attribute, domain, key, rows);
     } // select
-
+    
     /************************************************************************************
      * Union this table and table2.  Check that the two tables are compatible.
      *
@@ -353,7 +353,7 @@ public class Table
      *
      *@return a new Arraylist copy of the table's tuples
      */
-    public List getTuples()
+    public List<Comparable []> getTuples()
     {
 	List<Comparable []> _tuples = new ArrayList<>();
 	_tuples = this.tuples.stream().collect(Collectors.toList());
@@ -555,5 +555,18 @@ public class Table
 
 	return obj;
     } // extractDom
+
+    public boolean equals(Table other){
+
+	boolean found = false;
+	for(Comparable[] movie : this.tuples){
+	    found = false;
+	    for(Comparable [] other_movie : other.getTuples()){
+		if(movie.equals(other_movie)) found = true;
+	    }
+	    if(!found) return false;
+	}
+	return true;	
+    } 
 
 } // Table class
