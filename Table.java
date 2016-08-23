@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+
 import static java.lang.Boolean.*;
 import static java.lang.System.out;
 
@@ -22,6 +23,9 @@ import static java.lang.System.out;
 public class Table
            implements Serializable
 {
+    
+    public static final String ROOT_DIR="C:\\Users\\Trent\\Documents\\NetBeansProjects\\DBProject1\\output\\";
+    
     /** Relative path for storage directory
      */
     private static final String DIR = "store" + File.separator;
@@ -81,7 +85,7 @@ public class Table
 	key       = _key;
 	tuples    = new ArrayList <> ();
 	//      index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
-	index     = new LinHashMap <> (KeyType.class, Comparable [].class);
+	index     = new LinkedHashMap <KeyType, Comparable []> ();
 
     } // constructor
 
@@ -134,14 +138,31 @@ public class Table
      */
     public Table project (String attributes)
     {
-	out.println ("RA> " + name + ".project (" + attributes + ")");
-	String [] attrs     = attributes.split (" ");
-	Class []  colDomain = extractDom (match (attrs), domain);
+        Comparable[] newTuple;
+        Comparable[] originalTuple;
+        int[] colPositions;
+        List <Comparable []> rows = new ArrayList <> ();
+        
+        out.println ("RA> " + name + ".project (" + attributes + ")");
+        String [] attrs     = attributes.split (" ");
+        colPositions=match (attrs);
+	Class []  colDomain = extractDom (colPositions, domain);
 	String [] newKey    = (Arrays.asList (attrs).containsAll (Arrays.asList (key))) ? key : attrs;
 
-	List <Comparable []> rows = new ArrayList <> ();
-
 	//  T O   B E   I M P L E M E N T E D
+        for (int i=0;i<tuples.size();i++)
+        {
+            newTuple=new Comparable[attrs.length];
+            originalTuple=tuples.get(i);
+            
+            for (int j=0;j<colPositions.length;j++)
+            {
+                newTuple[j]=originalTuple[j];
+                
+            }
+            rows.add(newTuple);
+        }
+        
 
 	return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
@@ -332,9 +353,9 @@ public class Table
      *
      *@return a new Arraylist copy of the table's tuples
      */
-    public Arraylist getTuples()
+    public List getTuples()
     {
-	List<Comparable []> _tuples = new Arraylist<>();
+	List<Comparable []> _tuples = new ArrayList<>();
 	_tuples = this.tuples.stream().collect(Collectors.toList());
 	return _tuples;
     }
@@ -386,7 +407,7 @@ public class Table
     {
 	Table tab = null;
 	try {
-	    ObjectInputStream ois = new ObjectInputStream (new FileInputStream (DIR + name + EXT));
+	    ObjectInputStream ois = new ObjectInputStream (new FileInputStream (ROOT_DIR + DIR + name + EXT));
 	    tab = (Table) ois.readObject ();
 	    ois.close ();
 	} catch (IOException ex) {
@@ -405,7 +426,7 @@ public class Table
     public void save ()
     {
 	try {
-	    ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream (DIR + name + EXT));
+	    ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream (ROOT_DIR + DIR + name + EXT));
 	    oos.writeObject (this);
 	    oos.close ();
 	} catch (IOException ex) {
