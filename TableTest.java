@@ -51,6 +51,52 @@ public class TableTest extends TestCase{
     }
     
     
+    //@Test
+    public void testProject(){
+        Table t_project1;
+        Table t_project2;
+        Table t_project3;
+        Table t_project4;
+        
+        Table t_project1_correct;
+        Table t_project2_correct;
+        Table t_project3_correct;
+        Table t_project4_correct;
+        
+        Comparable [] project1_film0 = { "Star_Wars", 1977 };
+	Comparable [] project1_film1 = { "Star_Wars_2", 1980 };
+	Comparable [] project1_film2 = { "Rocky", 1985 };
+	Comparable [] project1_film3 = { "Rambo", 1978 };
+        
+        System.out.println("\n\n Testing projection....");
+        
+        //Projection 1
+        t_project1_correct = new Table ("movie", 
+                                        "title year",
+                                        "String Integer",
+                                        "title year");
+        t_project1_correct.insert(project1_film0);
+        t_project1_correct.insert(project1_film1);
+        t_project1_correct.insert(project1_film2);
+        t_project1_correct.insert(project1_film3);
+        
+        System.out.print("\n\n Test 1: Regular projection");
+        t_project1 = movie.project ("title year");
+        assertTrue(t_project1.equals(t_project1_correct));
+        
+        System.out.print("Test 2: Order reversed");
+        t_project2 = movie.project ("year table");
+
+        System.out.print("Test 3: No columns");
+        t_project3 = movie.project ("year table");
+        
+        System.out.print("Test 4: All columns");
+        t_project4 = movie.project ("year table");
+        
+        //assertTrue()''
+        assertTrue(false);
+    }
+    
 
     @Test
     public void testMinus(){

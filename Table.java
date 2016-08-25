@@ -22,7 +22,8 @@ public class Table
            implements Serializable
 {
     
-    public static final String ROOT_DIR="C:\\Users\\Trent\\Documents\\NetBeansProjects\\DBProject1\\output\\";
+    //public static final String ROOT_DIR="C:\\Users\\Trent\\Documents\\NetBeansProjects\\DBProject1\\output\\";
+    public static final String ROOT_DIR="";
     
     /** Relative path for storage directory
      */
