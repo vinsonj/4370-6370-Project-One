@@ -638,7 +638,7 @@ return new Table (name + count++, attrs, colDomain, newKey, rows);
 	for(Comparable[] movie : this.tuples){
 	    found = false;
 	    for(Comparable [] other_movie : other.getTuples()){
-		if(movie.equals(other_movie)) found = true;
+		if(Arrays.equals(movie,other_movie)) found = true;
 	    }
 	    if(!found) return false;
 	}
