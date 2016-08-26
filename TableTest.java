@@ -151,6 +151,10 @@ public class TableTest extends TestCase{
 	assertTrue(newMovie.equals(movie4));
     } 
     
+    /**
+     * Join two tables using equi-join operation.
+     * @result a table with tuples satisfying the equality predicate
+     */
     @Test
     public void testEquiJoin(){
     	System.out.println("\n\nBEGINNING TEST OF EQUI-JOIN\n\n");
@@ -177,11 +181,8 @@ public class TableTest extends TestCase{
     	Comparable [] joinFilm1 = {"Star_Wars_2", 1980, "Padme", "Jango", "Zam", "Joe"};
     	movie2.insert(joinFilm1); 
     	movie2.insert(joinFilm0);
-     
     	movie2.print();
     	
-    	//ACT
-    	Table joinTable = movie.join("title year", "title year", movie2);	//EquiJoin
     	Table equiJoin_correct = new Table (
     			"equiJoin_correct", "title year length genre studioName producerNo title2 year2 actor1 actor2 actor3 actor4",
                 		   "String Integer Integer String String Integer String Integer String String String String", "title year");
@@ -191,51 +192,21 @@ public class TableTest extends TestCase{
     	equiJoin_correct.insert(equiJoin_correct_film1);
     	equiJoin_correct.insert(equiJoin_correct_film2);
     	equiJoin_correct.print();
+    	
+    	//ACT
+    	Table joinTable = movie.join("title year", "title year", movie2);	//EquiJoin
     	joinTable.print();
-//    	assertTrue(equiJoin_correct.getTuples().size() == joinTable.getTuples().size());
-    	
-//    	for(Comparable[] equiJoin_correct_tuple : equiJoin_correct.getTuples()){
-//    	    for(Comparable [] joinTable_tuple : joinTable.getTuples()){
-//    	    	for( int i = 0; i < joinTable_tuple.length; i++){
-//    	    		System.out.print(joinTable_tuple[i] + " ");
-//    	    	}
-//    	    	System.out.println("");
-//    	    	for( int i = 0; i < equiJoin_correct_tuple.length; i++){
-//    	    		System.out.print(equiJoin_correct_tuple[i] + " ");
-//    	    	}
-//    	    	System.out.println(Arrays.equals(equiJoin_correct_tuple, joinTable_tuple));
-//    	    	
-//	    		if(equiJoin_correct_tuple.equals(joinTable_tuple))
-//	    			System.out.println("\n\nFOUND MATCHING TUPLE\n\n");
-//	    		else
-//	    			System.out.println("\n\nMISMATCHED TUPLES\n"+equiJoin_correct_tuple.toString()+"\n\n");
-//    	    }
-//    	}
-//    	equiJoin_correct.printIndex();
-//    	joinTable.printIndex(); 
-//    	List<Comparable []> tuples1 = equiJoin_correct.getTuples();
-//    	List<Comparable []> tuples2 = joinTable.getTuples();
-    	
-    
-    	Table naturalJoin = movie.join(movie2); 
-    	naturalJoin.print();
-    	
+    	    	
     	//ASSERT
-    	assertTrue(equiJoin_correct.getTuples().size() == naturalJoin.getTuples().size());
-//    	Table selectTest = joinTable.select(new KeyType(new Comparable[]{"Star_Wars",1977}));
-//    	selectTest.print();
-    	
+    	assertTrue(equiJoin_correct.getTuples().size() == joinTable.getTuples().size());
     	assertTrue(joinTable.equals(equiJoin_correct));
-    	
-//    	for( int i = 0; i < tuples1.size(); i++){
-//    		System.out.println(i);
-//    		assertTrue(tuples1.get(i).equals(tuples2.get(i)));
-//    	}
-//    	assertTrue(tuples1 == tuples2);
-//    	assertTrue(joinTable.compatible(equiJoin_correct));
 
     }
     
+    /**
+     * Join two tables using natural-join operation.
+     * @result a table with tuples satisfying the equality predicate
+     */
     @Test
     public void testNaturalJoin(){
     	
@@ -275,9 +246,11 @@ public class TableTest extends TestCase{
     	naturalJoin_correct.insert(naturalJoin_correct_film2);
     	naturalJoin_correct.print();
     	
+    	//ACT
     	Table joinTable = movie.join(movie2);	//Natural Join
     	joinTable.print();
     	
+    	//ASSERT
     	assertTrue(naturalJoin_correct.getTuples().size() == joinTable.getTuples().size());
     	assertTrue(naturalJoin_correct.equals(joinTable));
     	

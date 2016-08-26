@@ -294,13 +294,6 @@ return new Table (name + count++, attrs, colDomain, newKey, rows);
             Comparable[] row = ArrayUtil.concat(rowTable1, equalRow);
             rows.add(row); 
         }
-        
-        
-            //if rowtable1.getattributes == rowTable2.getAttributes 
-            //select rowtable2 
-            //concat rowtable1 and rowtable2 
-            //add to rows 
-        
     }
     System.out.println("end"); 
 
