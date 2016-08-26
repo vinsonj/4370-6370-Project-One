@@ -1,5 +1,4 @@
 
-
 /****************************************************************************************
  * @file  Table.java
  *
@@ -146,27 +145,28 @@ public class Table
         
         out.println ("RA> " + name + ".project (" + attributes + ")");
         String [] attrs     = attributes.split (" ");
-        colPositions=match (attrs);
-	Class []  colDomain = extractDom (colPositions, domain);
-	String [] newKey    = (Arrays.asList (attrs).containsAll (Arrays.asList (key))) ? key : attrs;
+        colPositions = match (attrs);
+        Class []  colDomain = extractDom (colPositions, domain);
+        String [] newKey    = (Arrays.asList (attrs).containsAll (Arrays.asList (key))) ? key : attrs;
 
-	//  T O   B E   I M P L E M E N T E D
+    //  T O   B E   I M P L E M E N T E D
         for (int i=0;i<tuples.size();i++)
         {
             newTuple=new Comparable[attrs.length];
             originalTuple=tuples.get(i);
-            
-            for (int j=0;j<colPositions.length;j++)
+            int k = 0;
+            for (int j=0;j<newTuple.length;j++)
             {
-                newTuple[j]=originalTuple[j];
-                
+                k = colPositions[j]; 
+                newTuple[j]=originalTuple[k];
             }
             rows.add(newTuple);
         }
         
 
-	return new Table (name + count++, attrs, colDomain, newKey, rows);
+return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
+
 
     /************************************************************************************
      * Select the tuples satisfying the given predicate (Boolean function).
@@ -264,19 +264,61 @@ public class Table
      */
     public Table join (String attributes1, String attributes2, Table table2)
     {
-	out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
-		     + table2.name + ")");
+    out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
+             + table2.name + ")");
+    this.print();
+    table2.print();
 
-	String [] t_attrs = attributes1.split (" ");
-	String [] u_attrs = attributes2.split (" ");
+    String [] t_attrs = attributes1.split (" ");
+    String [] u_attrs = attributes2.split (" ");
 
-	List <Comparable []> rows = new ArrayList <> ();
+    List <Comparable []> rows = new ArrayList <> ();
+    
+    System.out.println("begin");
+    int[] tb1ColsToCompare = new int[t_attrs.length]; 
+    for (int i = 0; i < t_attrs.length; i++){//String attribute : t_attrs){
+        tb1ColsToCompare[i] = this.col(t_attrs[i]); 
+    }
+    
+    for(Comparable[] rowTable1 : tuples){
+        Table equalRows = null; 
+        for(int k = 0; k < t_attrs.length; k++){
+            final int in = k; 
+            if(equalRows == null){
+                equalRows = table2.select(t -> t[this.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+            } else{
+                equalRows = equalRows.select(t -> t[this.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])])); 
+            }
+        }
+        for(Comparable[] equalRow : equalRows.getTuples()){
+            Comparable[] row = ArrayUtil.concat(rowTable1, equalRow);
+            rows.add(row); 
+        }
+        
+        
+            //if rowtable1.getattributes == rowTable2.getAttributes 
+            //select rowtable2 
+            //concat rowtable1 and rowtable2 
+            //add to rows 
+        
+    }
+    System.out.println("end"); 
 
-	//  T O   B E   I M P L E M E N T E D
-
-	return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
-			  ArrayUtil.concat (domain, table2.domain), key, rows);
+    String[] table2Attributes = new String[table2.attribute.length]; 
+    for (int i = 0; i<table2Attributes.length; i++){
+        table2Attributes[i] = table2.attribute[i]; 
+    }
+    for (String s1 : attribute){
+        for (int i = 0; i < table2Attributes.length; i++){//String s2 : table2.attribute){
+            if(s1.equals(table2Attributes[i])){
+                table2Attributes[i] = table2Attributes[i].concat("2"); 
+            }
+        }
+    }
+    return new Table (name + count++, ArrayUtil.concat (attribute, table2Attributes),
+              ArrayUtil.concat (domain, table2.domain), key, rows);
     } // join
+
 
     /************************************************************************************
      * Join this table and table2 by performing an "natural join".  Tuples from both tables
@@ -290,16 +332,48 @@ public class Table
      */
     public Table join (Table table2)
     {
-	out.println ("RA> " + name + ".join (" + table2.name + ")");
+    out.println ("RA> " + name + ".join (" + table2.name + ")");
 
-	List <Comparable []> rows = new ArrayList <> ();
+    List <Comparable []> rows = new ArrayList <> ();
+    
+    String attributesToCheck = ""; 
+    //  T O   B E   I M P L E M E N T E D
+    for(int i = 0; i < attribute.length; i++){
+        for(int j = 0; j < table2.attribute.length; j++){
+            if(table2.attribute[j].equals(attribute[i])){
+                attributesToCheck = attributesToCheck.concat(table2.attribute[j] + " ");
+            }
+        }
+    }
 
-	//  T O   B E   I M P L E M E N T E D
+    attributesToCheck = attributesToCheck.trim(); 
+    
+    Table table = join(attributesToCheck, attributesToCheck,table2); 
+    
+    String[] attributesToCheckArray = attributesToCheck.split (" ");
+    
+    attributesToCheck = ""; 
+    boolean isRepeat = true; 
+    for(int i = 0; i < table.attribute.length; i++){
+        for (int j = 0; j < attributesToCheckArray.length; j++){
+            if (table.attribute[i].equals(attributesToCheckArray[j]+"2")){
+                isRepeat =false; 
+                break;  
+            }
+        }
+        if(isRepeat)
+            attributesToCheck = attributesToCheck.concat(table.attribute[i] + " "); 
+        isRepeat = true; 
+    }
+    attributesToCheck = attributesToCheck.trim(); 
+    System.out.println("attributesToCheck>" + attributesToCheck + "<");
+    
+    Table finalTable = table.project(attributesToCheck); 
 
-	// FIX - eliminate duplicate columns
-	return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
-			  ArrayUtil.concat (domain, table2.domain), key, rows);
+    // FIX - eliminate duplicate columns
+    return finalTable;
     } // join
+
 
     /************************************************************************************
      * Return the column position for the given attribute name.
