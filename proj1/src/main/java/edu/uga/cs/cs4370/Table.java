@@ -22,10 +22,6 @@ import static java.lang.System.out;
 public class Table
            implements Serializable
 {
-    
-    //public static final String ROOT_DIR="C:\\Users\\Trent\\Documents\\NetBeansProjects\\DBProject1\\output\\";
-    public static final String ROOT_DIR="";
-    
     /** Relative path for storage directory
      */
     private static final String DIR = "store" + File.separator;
@@ -87,7 +83,6 @@ public class Table
 	index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
 	//index     = new LinHashMap <> (KeyType.class, Comparable [].class);
 	//index = new HashMap<>(KeyType.class, Comparable [].class);
-
     } // constructor
 
     /************************************************************************************
@@ -139,31 +134,14 @@ public class Table
      */
     public Table project (String attributes)
     {
-        Comparable[] newTuple;
-        Comparable[] originalTuple;
-        int[] colPositions;
-        List <Comparable []> rows = new ArrayList <> ();
-        
-        out.println ("RA> " + name + ".project (" + attributes + ")");
-        String [] attrs     = attributes.split (" ");
-        colPositions=match (attrs);
-	Class []  colDomain = extractDom (colPositions, domain);
+	out.println ("RA> " + name + ".project (" + attributes + ")");
+	String [] attrs     = attributes.split (" ");
+	Class []  colDomain = extractDom (match (attrs), domain);
 	String [] newKey    = (Arrays.asList (attrs).containsAll (Arrays.asList (key))) ? key : attrs;
 
+	List <Comparable []> rows = new ArrayList <> ();
+
 	//  T O   B E   I M P L E M E N T E D
-        for (int i=0;i<tuples.size();i++)
-        {
-            newTuple=new Comparable[attrs.length];
-            originalTuple=tuples.get(i);
-            
-            for (int j=0;j<colPositions.length;j++)
-            {
-                newTuple[j]=originalTuple[j];
-                
-            }
-            rows.add(newTuple);
-        }
-        
 
 	return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
@@ -409,7 +387,7 @@ public class Table
     {
 	Table tab = null;
 	try {
-	    ObjectInputStream ois = new ObjectInputStream (new FileInputStream (ROOT_DIR + DIR + name + EXT));
+	    ObjectInputStream ois = new ObjectInputStream (new FileInputStream (DIR + name + EXT));
 	    tab = (Table) ois.readObject ();
 	    ois.close ();
 	} catch (IOException ex) {
@@ -428,7 +406,7 @@ public class Table
     public void save ()
     {
 	try {
-	    ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream (ROOT_DIR + DIR + name + EXT));
+	    ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream (DIR + name + EXT));
 	    oos.writeObject (this);
 	    oos.close ();
 	} catch (IOException ex) {
